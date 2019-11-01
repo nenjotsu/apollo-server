@@ -34,6 +34,7 @@
 ```
 SECRET=VH^kgG27p@6MaZPFB@6!&zwTMtex6XFH
 DATABASE_URL=mongodb://localhost:27017/mydatabase
+TEST_DATABASE_URL=mongodb://localhost:27017/mytestdatabase
 ```
 
 The `SECRET` is just a random string for your authentication. Keep all these information secure by adding the _.env_ file to your _.gitignore_ file. No third-party should have access to this information.

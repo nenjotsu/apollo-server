@@ -68,11 +68,12 @@ export default {
         firstName,
         middleName,
         lastName,
+        dateTurnedOver,
+        dateOfBirth,
       },
       { models, secret },
     ) => {
       const userExisting = await models.User.findOne({ email });
-      console.log('userExisting', userExisting);
       if (!userExisting) {
         const user = await models.User.create({
           username,
@@ -86,6 +87,8 @@ export default {
           firstName,
           middleName,
           lastName,
+          dateTurnedOver,
+          dateOfBirth,
         });
 
         sendEmail(email, emailTemplates.confirm(user._id));
@@ -94,10 +97,7 @@ export default {
           message: msgs.confirm,
         };
       } else if (userExisting && !userExisting.confirmed) {
-        sendEmail(
-          userExisting.email,
-          emailTemplates.confirm(userExisting._id),
-        );
+        sendEmail(userExisting.email, emailTemplates.confirm(userExisting._id));
         return {
           token: '',
           message: msgs.resend,
@@ -110,23 +110,20 @@ export default {
       }
     },
 
-    signIn: async (
-      parent,
-      { login, password },
-      { models, secret },
-    ) => {
+    signIn: async (parent, { login, password }, { models, secret }) => {
       const user = await models.User.findByLogin(login);
 
       if (!user) {
-        throw new UserInputError(
-          'No user found with this login credentials.',
-        );
+        throw new UserInputError('No user found with this login credentials.');
       }
 
       const isValid = await user.validatePassword(password);
 
       if (!isValid) {
-        throw new AuthenticationError('Invalid password.');
+        throw new AuthenticationError('Invalid username/email or password.');
+      }
+      if (!user.confirmed) {
+        throw new AuthenticationError('Please confirm the email first before you can sign in.');
       }
 
       return {
@@ -135,30 +132,20 @@ export default {
       };
     },
 
-    updateUser: combineResolvers(
-      isAuthenticated,
-      async (parent, { username }, { models, me }) => {
-        return await models.User.findByIdAndUpdate(
-          me.id,
-          { username },
-          { new: true },
-        );
-      },
-    ),
+    updateUser: combineResolvers(isAuthenticated, async (parent, { username }, { models, me }) => {
+      return await models.User.findByIdAndUpdate(me.id, { username }, { new: true });
+    }),
 
-    deleteUser: combineResolvers(
-      isAdmin,
-      async (parent, { id }, { models }) => {
-        const user = await models.User.findById(id);
+    deleteUser: combineResolvers(isAdmin, async (parent, { id }, { models }) => {
+      const user = await models.User.findById(id);
 
-        if (user) {
-          await user.remove();
-          return true;
-        } else {
-          return false;
-        }
-      },
-    ),
+      if (user) {
+        await user.remove();
+        return true;
+      } else {
+        return false;
+      }
+    }),
   },
 
   User: {

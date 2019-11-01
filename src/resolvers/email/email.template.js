@@ -7,7 +7,7 @@ export default {
       <h1>Welcome to ${process.env.APP_NAME}</h1>
       <p>Thanks for signing up. To access the ${process.env.APP_NAME} system, please verify your email addressby clicking the button below.
       <hr />
-      <a href='${CLIENT_ORIGIN}/confirm/${id}' style='
+      <a href='${CLIENT_ORIGIN}/email_confirm/${id}' style='
           padding: 0.3em .5em;
           border-radius: 5px;
           background: #4caf50;
