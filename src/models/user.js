@@ -41,6 +41,8 @@ const userSchema = new mongoose.Schema({
   occupation: String,
   business: String,
   businessType: String,
+  dateTurnedOver: Date,
+  dateOfBirth: Date,
 });
 
 userSchema.statics.findByLogin = async function(login) {

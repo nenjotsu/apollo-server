@@ -5,10 +5,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
 import express from 'express';
-import {
-  ApolloServer,
-  AuthenticationError,
-} from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 
 import schema from './schema';
 import resolvers from './resolvers';
@@ -35,9 +32,7 @@ const getMe = async req => {
     try {
       return await jwt.verify(token, process.env.SECRET);
     } catch (e) {
-      throw new AuthenticationError(
-        'Your session expired. Sign in again.',
-      );
+      throw new AuthenticationError('Your session expired. Sign in again.');
     }
   }
 };
@@ -63,9 +58,7 @@ const server = new ApolloServer({
       return {
         models,
         loaders: {
-          user: new DataLoader(keys =>
-            loaders.user.batchUsers(keys, models),
-          ),
+          user: new DataLoader(keys => loaders.user.batchUsers(keys, models)),
         },
       };
     }
@@ -78,9 +71,7 @@ const server = new ApolloServer({
         me,
         secret: process.env.SECRET,
         loaders: {
-          user: new DataLoader(keys =>
-            loaders.user.batchUsers(keys, models),
-          ),
+          user: new DataLoader(keys => loaders.user.batchUsers(keys, models)),
         },
       };
     }
@@ -97,15 +88,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 8000;
 
 connectDb().then(async () => {
-  if (isTest || isProduction) {
-    // reset database
-    await Promise.all([
-      models.User.deleteMany({}),
-      models.Message.deleteMany({}),
-    ]);
+  // if (isTest || isProduction) {
+  //   // reset database
+  //   await Promise.all([models.User.deleteMany({}), models.Message.deleteMany({})]);
 
-    createUsersWithMessages(new Date());
-  }
+  //   // createUsersWithMessages(new Date());
+  // }
 
   httpServer.listen({ port }, () => {
     console.log(`Apollo Server on http://localhost:${port}/graphql`);
@@ -117,6 +105,13 @@ const createUsersWithMessages = async date => {
     username: 'nenjotsu',
     email: 'hello@nenjotsu.com',
     password: 'nenjotsu',
+    role: 'ADMIN',
+  });
+
+  const user2 = new models.User({
+    username: 'jiro',
+    email: 'hello@jiro.com',
+    password: 'jiro',
     role: 'ADMIN',
   });
 
