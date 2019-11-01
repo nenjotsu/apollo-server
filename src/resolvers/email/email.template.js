@@ -5,7 +5,7 @@ export default {
     subject: `${process.env.APP_NAME} - Confirm Email`,
     html: `
       <h1>Welcome to ${process.env.APP_NAME}</h1>
-      <p>Thanks for signing up. To access the ${process.env.APP_NAME} system, please verify your email addressby clicking the button below.
+      <p>Thanks for signing up. To access the ${process.env.APP_NAME} system, please verify your email address by clicking the button below.
       <hr />
       <a href='${CLIENT_ORIGIN}/email_confirm/${id}' style='
           padding: 0.3em .5em;
