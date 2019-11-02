@@ -4,12 +4,11 @@ import { AuthenticationError, UserInputError } from 'apollo-server';
 import sendEmail from './email/email.sender';
 import msgs from './email/email.messages';
 import emailTemplates from './email/email.template';
-
 import { isAdmin, isAuthenticated } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
-  const { id, email, username, role } = user;
-  return await jwt.sign({ id, email, username, role }, secret, {
+  const { id, email, username, role, unitNo, dateTurnedOver } = user;
+  return await jwt.sign({ id, email, username, role, unitNo, dateTurnedOver }, secret, {
     expiresIn,
   });
 };
@@ -127,7 +126,7 @@ export default {
       }
 
       return {
-        token: createToken(user, secret, '30m'),
+        token: createToken(user, secret, '1d'),
         message: 'Logged in successfully!',
       };
     },
@@ -142,9 +141,9 @@ export default {
       if (user) {
         await user.remove();
         return true;
-      } else {
-        return false;
       }
+
+      return false;
     }),
   },
 
