@@ -21,8 +21,8 @@ export default gql`
       firstName: String!
       middleName: String
       lastName: String!
-      dateTurnedOver: Date
-      dateOfBirth: Date!
+      dateTurnedOver: DateTime
+      dateOfBirth: DateTime!
     ): Token!
 
     signIn(login: String!, password: String!): Token!
@@ -51,8 +51,8 @@ export default gql`
     occupation: String
     business: String
     businessType: String
-    dateTurnedOver: Date
-    dateOfBirth: Date
+    dateTurnedOver: DateTime
+    dateOfBirth: DateTime
     messages: [Message!]
   }
 `;
