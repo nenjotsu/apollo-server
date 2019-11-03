@@ -1,23 +1,15 @@
-import jwt from 'jsonwebtoken';
 import { combineResolvers } from 'graphql-resolvers';
 import { AuthenticationError, UserInputError } from 'apollo-server';
-import sendEmail from './email/email.sender';
-import msgs from './email/email.messages';
-import emailTemplates from './email/email.template';
-import { isAdmin, isAuthenticated } from './authorization';
-
-const createToken = async (user, secret, expiresIn) => {
-  const { id, email, username, role, unitNo, dateTurnedOver } = user;
-  return await jwt.sign({ id, email, username, role, unitNo, dateTurnedOver }, secret, {
-    expiresIn,
-  });
-};
+import sendEmail from '../email/email.sender';
+import msgs from '../email/email.messages';
+import emailTemplates from '../email/email.template';
+import { isAdmin, isAuthenticated } from '../authorization';
+import createToken from './createToken';
+import queryUsers from './query.users';
 
 export default {
   Query: {
-    users: async (parent, args, { models }) => {
-      return await models.User.find();
-    },
+    users: queryUsers,
     user: async (parent, { id }, { models }) => {
       return await models.User.findById(id);
     },
