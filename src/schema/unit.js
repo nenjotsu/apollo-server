@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express';
 export default gql`
   extend type Query {
     allUnits: [Unit!]
-    unit(id: ID!): Unit
+    unit(unitNo: String!): Unit
     myUnit: Unit
   }
 
@@ -23,8 +23,8 @@ export default gql`
   }
 
   type Unit {
-    id: ID!
-    unitNo: String!
+    id: ID
+    unitNo: String
     ownerName: String
     houseModel: String
     dateTurnedOver: DateTime

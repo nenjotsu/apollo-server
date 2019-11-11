@@ -57,6 +57,7 @@ const server = new ApolloServer({
     if (connection) {
       return {
         models,
+        secret: process.env.SECRET,
         loaders: {
           user: new DataLoader(keys => loaders.user.batchUsers(keys, models)),
         },
@@ -105,14 +106,14 @@ const createUsersWithMessages = async date => {
     username: 'nenjotsu',
     email: 'hello@nenjotsu.com',
     password: 'nenjotsu',
-    role: 'ADMIN',
+    role: 'admin',
   });
 
   const user2 = new models.User({
     username: 'jiro',
     email: 'hello@jiro.com',
     password: 'jiro',
-    role: 'ADMIN',
+    role: 'admin',
   });
 
   const message1 = new models.Message({

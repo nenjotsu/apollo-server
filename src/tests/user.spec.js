@@ -14,13 +14,9 @@ before(async () => {
 
   expectedUsers = await models.User.find();
 
-  expectedUser = expectedUsers.filter(
-    user => user.role !== 'ADMIN',
-  )[0];
+  expectedUser = expectedUsers.filter(user => user.role !== 'admin')[0];
 
-  expectedAdminUser = expectedUsers.filter(
-    user => user.role === 'ADMIN',
-  )[0];
+  expectedAdminUser = expectedUsers.filter(user => user.role === 'admin')[0];
 });
 
 after(async () => {
@@ -145,9 +141,7 @@ describe('users', () => {
         password: 'asdasdasd',
       });
 
-      const expectedNewUser = await models.User.findByLogin(
-        'mark@gmule.com',
-      );
+      const expectedNewUser = await models.User.findByLogin('mark@gmule.com');
 
       const {
         data: {
@@ -276,8 +270,6 @@ describe('users', () => {
       password: 'ddavids',
     });
 
-    expect(errors[0].message).to.eql(
-      'No user found with this login credentials.',
-    );
+    expect(errors[0].message).to.eql('No user found with this login credentials.');
   });
 });

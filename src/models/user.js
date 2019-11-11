@@ -3,47 +3,52 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import isEmail from 'validator/lib/isEmail';
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      validate: [isEmail, 'No valid email address provided.'],
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 7,
+      maxlength: 42,
+    },
+    role: {
+      type: String,
+    },
+    confirmed: {
+      type: Boolean,
+      default: false,
+    },
+    contactNo: String,
+    unitNo: {
+      type: String,
+      required: true,
+      maxlength: 8,
+    },
+    residencyType: String,
+    firstName: String,
+    middleName: String,
+    lastName: String,
+    position: String,
+    occupation: String,
+    business: String,
+    businessType: String,
+    dateTurnedOver: Date,
+    dateOfBirth: Date,
   },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate: [isEmail, 'No valid email address provided.'],
+  {
+    timestamps: true,
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 7,
-    maxlength: 42,
-  },
-  role: {
-    type: String,
-  },
-  confirmed: {
-    type: Boolean,
-    default: false,
-  },
-  contactNo: String,
-  unitNo: {
-    type: String,
-    required: true,
-    maxlength: 8,
-  },
-  residencyType: String,
-  firstName: String,
-  middleName: String,
-  lastName: String,
-  position: String,
-  occupation: String,
-  business: String,
-  businessType: String,
-  dateTurnedOver: Date,
-  dateOfBirth: Date,
-});
+);
 
 userSchema.statics.findByLogin = async function(login) {
   let user = await this.findOne({
