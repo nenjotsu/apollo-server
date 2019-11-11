@@ -1,29 +1,24 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { AuthenticationError, ApolloError } from 'apollo-server';
-import { isAdmin, isAuthenticated } from './authorization';
-import sendEmail from './email/email.sender';
-import emailTemplates from './email/email.template';
+import { isAdmin, isAuthenticated } from '../authorization';
+import sendEmail from '../email/email.sender';
+import emailTemplates from '../email/email.template';
 
 export default {
   Query: {
-    allUnits: async (parent, args, { models }) => {
+    allUnits: combineResolvers(isAuthenticated, async (parent, args, { models }) => {
       const result = await models.Unit.find();
       return result;
-    },
-    unit: async (parent, { id }, { models }) => {
-      return await models.Unit.findById(id);
+    }),
+    unit: async (parent, { unitNo }, { models }) => {
+      return await models.Unit.findOne({ unitNo });
     },
     myUnit: combineResolvers(isAuthenticated, async (parent, args, { models, me }) => {
       if (!me) {
         return;
       }
       const user = await models.User.findById(me.id);
-      const result = await models.Unit.find({ unitNo: user.unitNo });
-      if (result.length === 0) {
-        throw new Error('No record found');
-      }
-      console.log('result', result);
-      return result[0];
+      return await models.Unit.findOne({ unitNo: user.unitNo });
     }),
   },
 

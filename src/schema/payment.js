@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express';
 export default gql`
   extend type Query {
     allPayments: [Payment!]
-    payment(id: ID!): Payment
+    payments(unitNo: String!): [Payment]
     myPayments: [Payment]
   }
 

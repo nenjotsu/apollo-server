@@ -13,13 +13,13 @@ export default {
     user: async (parent, { id }, { models }) => {
       return await models.User.findById(id);
     },
-    me: async (parent, args, { models, me }) => {
-      if (!me) {
+    me: combineResolvers(isAuthenticated, async (parent, args, { models, me }) => {
+      if (!isAuthenticated || !me) {
         return null;
       }
 
       return await models.User.findById(me.id);
-    },
+    }),
     emailConfirm: async (parent, { id }, { models }) => {
       const user = await models.User.findById(id);
       if (!user) {
@@ -120,6 +120,7 @@ export default {
       return {
         token: createToken(user, secret, '1d'),
         message: 'Logged in successfully!',
+        role: user.role,
       };
     },
 
