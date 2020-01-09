@@ -17,8 +17,7 @@ export default {
       if (!me) {
         return;
       }
-      const user = await models.User.findById(me.id);
-      return await models.Unit.findOne({ unitNo: user.unitNo });
+      return await models.Unit.findOne({ unitNo: me.unitNo });
     }),
   },
 

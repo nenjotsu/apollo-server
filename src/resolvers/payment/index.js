@@ -1,4 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
+import { orderBy } from 'lodash';
 import { AuthenticationError } from 'apollo-server';
 import { isAdmin, isAuthenticated } from '../authorization';
 import sendEmail from '../email/email.sender';
@@ -8,19 +9,18 @@ export default {
   Query: {
     allPayments: combineResolvers(isAuthenticated, async (parent, args, { models }) => {
       const result = await models.Payment.find();
-      return result;
+      return orderBy(result, ['datePayment'], ['desc']);
     }),
     payments: combineResolvers(isAuthenticated, async (parent, { unitNo }, { models }) => {
-      return await models.Payment.find({ unitNo });
+      const result = await models.Payment.find({ unitNo });
+      return orderBy(result, ['datePayment'], ['desc']);
     }),
     myPayments: combineResolvers(isAuthenticated, async (parent, args, { models, me }) => {
       if (!isAuthenticated || !me) {
         return [];
       }
-      console.log('me', me);
-      const user = await models.User.findById(me.id);
-      const result = await models.Payment.find({ unitNo: user.unitNo });
-      return result;
+      const result = await models.Payment.find({ unitNo: me.unitNo });
+      return orderBy(result, ['datePayment'], ['desc']);
     }),
   },
 
@@ -36,8 +36,8 @@ export default {
           remarks,
           paymentType,
           datePayment,
-          dateOfCheck,
-          datePosted,
+          dateOfCheck = moment(''),
+          datePosted = moment(''),
           checkStatus,
           checkNo,
           bankName,
@@ -62,9 +62,20 @@ export default {
         });
 
         // sendEmail(email, emailTemplates.paymentCopy(payment));
-        return payment.id;
+        return `Successfully created Payment ID: ${payment.id}`;
       },
     ),
+
+    deletePayment: combineResolvers(isAuthenticated, async (parent, { id }, { models }) => {
+      const payment = await models.Payment.findById(id);
+
+      if (payment) {
+        await payment.remove();
+        return true;
+      } else {
+        return false;
+      }
+    }),
 
     // signIn: async (parent, { login, password }, { models, secret }) => {
     //   const payment = await models.Payment.findByLogin(login);
@@ -93,16 +104,5 @@ export default {
     //     return await models.Payment.findByIdAndUpdate(me.id, { username }, { new: true });
     //   },
     // ),
-
-    // deletePayment: combineResolvers(isAdmin, async (parent, { id }, { models }) => {
-    //   const payment = await models.Payment.findById(id);
-
-    //   if (payment) {
-    //     await payment.remove();
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // }),
   },
 };

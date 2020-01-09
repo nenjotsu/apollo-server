@@ -17,8 +17,19 @@ export default {
       if (!isAuthenticated || !me) {
         return null;
       }
-
-      return await models.User.findById(me.id);
+      let ownerInfo;
+      const user = await models.User.findById(me.id);
+      if (!user.dateTurnedOver) {
+        ownerInfo = await models.User.findOne({ unitNo: user.unitNo, role: 'admin' });
+      } else {
+        return user;
+      }
+      const final = {
+        ...user._doc,
+        id: user._doc._id,
+        dateTurnedOver: ownerInfo.dateTurnedOver,
+      };
+      return final;
     }),
     emailConfirm: async (parent, { id }, { models }) => {
       const user = await models.User.findById(id);
