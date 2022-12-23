@@ -40,7 +40,7 @@
     "graphql-resolvers": "^0.3.2",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.3.14",
-    "nodemailer": "6.3.1",
+    "nodemailer": "6.6.1",
     "uuid": "^3.3.2",
     "validator": "^13.7.0"
   }
